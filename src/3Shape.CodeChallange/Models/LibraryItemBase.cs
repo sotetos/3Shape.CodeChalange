@@ -1,6 +1,8 @@
-﻿namespace Models
+﻿using Models.Interfaces;
+
+namespace Models
 {
-    public abstract class LibraryItemBase
+    public abstract class LibraryItemBase: IWorkWithTitle
     {
         public Guid Id { get; set; }
 
