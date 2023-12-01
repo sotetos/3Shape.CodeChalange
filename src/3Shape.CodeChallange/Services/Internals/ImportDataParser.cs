@@ -12,6 +12,7 @@ namespace Services.Internals
             using var streamWriter = new StreamWriter(dataStream);
             streamWriter.Write(inputString);
             streamWriter.Flush();
+            dataStream.Position = 0;
 
             using var streamReader = new StreamReader(dataStream);
 
@@ -28,7 +29,7 @@ namespace Services.Internals
                     continue;
                 }
 
-                var lineData = line.Trim().Split(':');
+                var lineData = line.Split(':').Select(l => l.Trim()).ToArray();
 
                 switch (lineData.Length)
                 {
