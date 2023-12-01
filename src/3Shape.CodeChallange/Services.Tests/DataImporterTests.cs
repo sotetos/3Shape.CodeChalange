@@ -1,6 +1,6 @@
 namespace Services.Tests
 {
-    public class UnitTest1
+    public class DataImporterTests
     {
         [Fact]
         public void Test1()
