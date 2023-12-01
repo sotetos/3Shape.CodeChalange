@@ -17,9 +17,9 @@ namespace Services.Internals.Models
         public IEnumerable<KeyValuePair<string, string>> PropertyValueData => _propertyValueData;
         public bool HasErrors => _errors.Any();
 
-        public bool AddPropertyValueData(KeyValuePair<string, string> data)
+        public bool AddPropertyValueData(string propertyName, string value)
         {
-            _propertyValueData.Add(data);
+            _propertyValueData.Add(new KeyValuePair<string, string>(propertyName, value));
             return true;
         }
 

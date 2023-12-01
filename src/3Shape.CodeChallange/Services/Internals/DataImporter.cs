@@ -14,6 +14,10 @@ namespace Services.Internals
 
         public DataImporter(IImportDataParser importDataParser, ISearchStringParser searchStringParser, PretendBookDataSource pretendBookDataSource)
         {
+            ArgumentNullException.ThrowIfNull(importDataParser);
+            ArgumentNullException.ThrowIfNull(searchStringParser);
+            ArgumentNullException.ThrowIfNull(pretendBookDataSource);
+
             _importDataParser = importDataParser;
             _searchStringParser = searchStringParser;
             _pretendBookDataSource = pretendBookDataSource;
@@ -21,13 +25,18 @@ namespace Services.Internals
 
         public List<Book> ReadBooks(string input)
         {
+            ArgumentNullException.ThrowIfNull(input);
+
             var data = _importDataParser.ParseInput(input);
 
             var results = data
                 .Where(d => !d.HasErrors)
                 .Select(BuildLibraryItem);
 
-            return results
+            //For this example, I will use only non-null values due to only implementing books
+            var books = results.Where(r => r != null);
+
+            return books
                 .Where(r => r.LibraryItemType == LibraryItemType.Book)
                 .Select(r => (Book)r)
                 .ToList();
@@ -38,7 +47,7 @@ namespace Services.Internals
             return new List<Book>(1);
         }
 
-        private static LibraryItemBase BuildLibraryItem(ParsedInputData data) => data.InputType switch
+        private static LibraryItemBase? BuildLibraryItem(ParsedInputData data) => data.InputType switch
         {
             LibraryItemType.Book => BuildBook(data),
             LibraryItemType.CD => null,

@@ -45,7 +45,7 @@ namespace Services.Internals
                             $"Unable to parse item type from {lineData.First()} for item number {resultData.Count + 1}");
                         continue;
                     case 2:
-                        currentResult.AddPropertyValueData(new KeyValuePair<string, string>(lineData[0], lineData[1]));
+                        currentResult.AddPropertyValueData(lineData[0], lineData[1]);
                         continue;
                 }
             }
