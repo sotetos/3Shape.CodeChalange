@@ -1,6 +1,7 @@
 using Bogus;
 using FluentAssertions;
 using Models;
+using Models.Text;
 using Moq;
 using Services.Internals;
 using Services.Internals.Models;
@@ -12,13 +13,13 @@ namespace Services.Tests
     {
         public readonly Mock<IImportDataParser> _importDataParserMock;
         public readonly Mock<ISearchStringParser> _searchStringParserMock;
-        public readonly Mock<PretendBookDataSource> _pretendBookDataSourceMock;
+        public readonly PretendBookDataSource _pretendBookDataSource;
 
         public DataServiceTests()
         {
             _importDataParserMock = new Mock<IImportDataParser>();
             _searchStringParserMock = new Mock<ISearchStringParser>();
-            _pretendBookDataSourceMock = new Mock<PretendBookDataSource>();
+            _pretendBookDataSource = new PretendBookDataSource();
         }
 
         private DataService buildService()
@@ -26,7 +27,7 @@ namespace Services.Tests
             return new DataService(
                 _importDataParserMock.Object,
                 _searchStringParserMock.Object,
-                _pretendBookDataSourceMock.Object
+                _pretendBookDataSource
             );
         }
 
@@ -61,6 +62,29 @@ namespace Services.Tests
             }
         }
 
+        private IEnumerable<Book> createRandomBooks(int count)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                var fake = new Faker();
+                var book = new Book()
+                {
+                    Title = fake.Company.CompanyName(),
+                    Publisher = fake.Hacker.Noun(),
+                    Id = Guid.NewGuid(),
+                    ISBN = fake.Hacker.Phrase(),
+                    LibraryItemType = LibraryItemType.Book,
+                    PageCount = Random.Shared.Next(100, 500),
+                    YearPublished = Random.Shared.Next(100, 2100)
+                };
+                for (var j = 0; j < Random.Shared.Next(1,5); j++)
+                {
+                    book.Authors.Add(new Faker().Person.FullName);
+                }
+                yield return book;
+            }
+        }
+
         #region ReadBooks
 
         [Theory]
@@ -90,5 +114,54 @@ namespace Services.Tests
 
         #endregion
 
+        #region FindBooks
+
+        [Theory]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        public void FindBooks_ValidInputThatMatchAllBooks_ReturnsAllBooks(int booksToTest)
+        {
+            var searchText = "12345";
+
+            var books = createRandomBooks(booksToTest).ToList();
+
+            for (var i = 0; i < books.Count(); i++)
+            {
+                switch (i%5)
+                {
+                    case 0:
+                        books[i].Title += searchText;
+                        break;
+                    case 1:
+                        books[i].Authors[0] += searchText;
+                        break;
+                    case 2:
+                        books[i].Publisher += searchText;
+                        break;
+                    case 3:
+                        books[i].YearPublished = int.Parse(searchText);
+                        break;
+                    case 4:
+                        books[i].ISBN += searchText;
+                        break;
+
+                }
+            }
+
+            _searchStringParserMock.Setup(s => s.ParseSearchString(searchText))
+                .Returns(new List<ParsedSearchCondition>()
+                {
+                    new ParsedSearchCondition(searchText)
+                });
+            _pretendBookDataSource.Books = books;
+
+            var result = buildService().FindBooks(searchText);
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(booksToTest);
+        }
+
+        #endregion
     }
 }
