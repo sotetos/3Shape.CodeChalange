@@ -1,10 +1,5 @@
 ﻿using Models;
 using Models.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Services.Internals.Models;
 
 namespace Services.Internals.ExtensionMethods
