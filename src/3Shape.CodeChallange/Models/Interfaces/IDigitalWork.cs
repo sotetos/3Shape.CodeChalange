@@ -2,5 +2,5 @@
 
 public interface IDigitalWork
 {
-    string GetFileFormat();
+    string FileFormat { get; }
 }

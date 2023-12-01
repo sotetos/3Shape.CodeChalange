@@ -10,7 +10,5 @@ namespace Models.Text
         {
             LibraryItemType = LibraryItemType.EBook;
         }
-
-        public string GetFileFormat() => FileFormat;
     }
 }
