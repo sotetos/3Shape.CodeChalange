@@ -12,6 +12,7 @@ namespace Services
             services.TryAddTransient<IDataImporter, DataService>();
             services.TryAddTransient<IImportDataParser, ImportDataParser>();
             services.TryAddTransient<ISearchStringParser, SearchStringParser>();
+            services.TryAddTransient<IdataAccessor, DataService>();
 
             services.AddSingleton<PretendBookDataSource>();
 
