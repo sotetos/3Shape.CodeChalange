@@ -6,13 +6,13 @@ using Services.Ports;
 
 namespace Services.Internals
 {
-    public class DataImporter : IDataImporter
+    public class DataService : IDataImporter, IdataAccessor
     {
         private readonly IImportDataParser _importDataParser;
         private readonly ISearchStringParser _searchStringParser;
         private readonly PretendBookDataSource _pretendBookDataSource;
 
-        public DataImporter(IImportDataParser importDataParser, ISearchStringParser searchStringParser, PretendBookDataSource pretendBookDataSource)
+        public DataService(IImportDataParser importDataParser, ISearchStringParser searchStringParser, PretendBookDataSource pretendBookDataSource)
         {
             ArgumentNullException.ThrowIfNull(importDataParser);
             ArgumentNullException.ThrowIfNull(searchStringParser);
@@ -42,9 +42,21 @@ namespace Services.Internals
                 .ToList();
         }
 
-        public List<Book> FindBooks(string searchString)
+        public List<Book> FindBooks(string search)
         {
-            return new List<Book>(1);
+            ArgumentNullException.ThrowIfNull(search);
+
+            var conditions = _searchStringParser.ParseSearchString(search);
+
+            var sourceBooks = _pretendBookDataSource.Books;
+            IEnumerable<Book> resultBooks = new List<Book>();
+
+            resultBooks = conditions.Aggregate(resultBooks,
+                (current, condition) => 
+                    current.Union(sourceBooks.Where(s => s.Search(condition)))
+                );
+
+            return resultBooks.ToList();
         }
 
         private static LibraryItemBase? BuildLibraryItem(ParsedInputData data) => data.InputType switch

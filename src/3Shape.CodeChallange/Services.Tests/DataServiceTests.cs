@@ -8,22 +8,22 @@ using Services.Ports;
 
 namespace Services.Tests
 {
-    public class DataImporterTests
+    public class DataServiceTests
     {
         public readonly Mock<IImportDataParser> _importDataParserMock;
         public readonly Mock<ISearchStringParser> _searchStringParserMock;
         public readonly Mock<PretendBookDataSource> _pretendBookDataSourceMock;
 
-        public DataImporterTests()
+        public DataServiceTests()
         {
             _importDataParserMock = new Mock<IImportDataParser>();
             _searchStringParserMock = new Mock<ISearchStringParser>();
             _pretendBookDataSourceMock = new Mock<PretendBookDataSource>();
         }
 
-        private DataImporter buildService()
+        private DataService buildService()
         {
-            return new DataImporter(
+            return new DataService(
                 _importDataParserMock.Object,
                 _searchStringParserMock.Object,
                 _pretendBookDataSourceMock.Object

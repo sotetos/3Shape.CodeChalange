@@ -6,17 +6,17 @@ namespace Services.Internals
 {
     internal class ImportDataParser : IImportDataParser
     {
-        public IEnumerable<ParsedInputData> ParseInput(string inputString)
+        public IEnumerable<ParsedInputData> ParseInput(string input)
         {
-            ArgumentNullException.ThrowIfNull(inputString);
-            if (string.IsNullOrWhiteSpace(inputString))
+            ArgumentNullException.ThrowIfNull(input);
+            if (string.IsNullOrWhiteSpace(input))
             {
-                throw new ArgumentException(nameof(inputString));
+                throw new ArgumentException(nameof(input));
             }
 
             using var dataStream = new MemoryStream();
             using var streamWriter = new StreamWriter(dataStream);
-            streamWriter.Write(inputString);
+            streamWriter.Write(input);
             streamWriter.Flush();
             dataStream.Position = 0;
 

@@ -9,7 +9,7 @@ namespace Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.TryAddTransient<IDataImporter, DataImporter>();
+            services.TryAddTransient<IDataImporter, DataService>();
             services.TryAddTransient<IImportDataParser, ImportDataParser>();
             services.TryAddTransient<ISearchStringParser, SearchStringParser>();
 

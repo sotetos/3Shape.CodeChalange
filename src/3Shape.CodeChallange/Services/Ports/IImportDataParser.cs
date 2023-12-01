@@ -4,5 +4,5 @@ namespace Services.Ports;
 
 public interface IImportDataParser
 {
-    IEnumerable<ParsedInputData> ParseInput(string inputString);
+    IEnumerable<ParsedInputData> ParseInput(string input);
 }
