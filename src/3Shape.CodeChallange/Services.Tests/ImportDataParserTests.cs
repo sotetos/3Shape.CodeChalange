@@ -47,6 +47,64 @@ namespace Services.Tests
                 .ContainEquivalentOf(new KeyValuePair<string, string>("NumberOfPages", "156"));
         }
 
+        [Theory]
+        [InlineData(LibraryItemType.Book)]
+        [InlineData(LibraryItemType.CD)]
+        [InlineData(LibraryItemType.DVD)]
+        [InlineData(LibraryItemType.BlueRay)]
+        [InlineData(LibraryItemType.EBook)]
+        [InlineData(LibraryItemType.AudioFile)]
+        [InlineData(LibraryItemType.VideoFile)]
+        [InlineData(LibraryItemType.Other)]
+        public void ParseInput_TypeOtherThanBook_ReturnsDataWithError(LibraryItemType type)
+        {
+            
+            var inputText =
+                $"{type}:\r\nAuthor: Brian Jensen\r\nTitle: Texts from Denmark\r\nPublisher: Gyldendal\r\nPublished: 2001\r\nNumberOfPages: 253";
+            var result = buildService().ParseInput(inputText);
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(1);
+            result.First().HasErrors.Should().BeFalse();
+            result.First().InputType.Should().Be(type);
+        }
+
+        [Fact]
+        public void ParseInput_InvalidInputType_ReturnsDataWithError()
+        {
+            var inputText =
+                "Fake:\r\nAuthor: Brian Jensen\r\nTitle: Texts from Denmark\r\nPublisher: Gyldendal\r\nPublished: 2001\r\nNumberOfPages: 253";
+            var result = buildService().ParseInput(inputText);
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(1);
+            result.First().HasErrors.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ParseInput_PropertyHasExtraColon_ReturnsDataWithError()
+        {
+            var inputText =
+                "Book:\r\nAuthor: Brian Jen:sen\r\nTitle: Texts from Denmark\r\nPublisher: Gyldendal\r\nPublished: 2001\r\nNumberOfPages: 253";
+            var result = buildService().ParseInput(inputText);
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(1);
+            result.First().HasErrors.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ParseInput_NullInput_ThrowsArgumentNullException()
+        {
+            buildService().Invoking(s => s.ParseInput(null)).Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void ParseInput_EmptyInput_ThrowsArgumentException()
+        {
+            buildService().Invoking(s => s.ParseInput("   ")).Should().Throw<ArgumentException>();
+        }
+
         #endregion
     }
 }

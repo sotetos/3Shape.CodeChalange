@@ -8,6 +8,12 @@ namespace Services.Internals
     {
         public IEnumerable<ParsedInputData> ParseInput(string inputString)
         {
+            ArgumentNullException.ThrowIfNull(inputString);
+            if (string.IsNullOrWhiteSpace(inputString))
+            {
+                throw new ArgumentException(nameof(inputString));
+            }
+
             using var dataStream = new MemoryStream();
             using var streamWriter = new StreamWriter(dataStream);
             streamWriter.Write(inputString);
@@ -29,9 +35,13 @@ namespace Services.Internals
                     continue;
                 }
 
-                var lineData = line.Split(':').Select(l => l.Trim()).ToArray();
+                //Note: This approach would fail if a property value had a : in it.
+                var lineData = line
+                    .Split(':')
+                    .Select(l => l.Trim())
+                    .Where(l => !string.IsNullOrWhiteSpace(l));
 
-                switch (lineData.Length)
+                switch (lineData.Count())
                 {
                     case 0:
                         resultData.Add(currentResult);
@@ -46,8 +56,13 @@ namespace Services.Internals
                             $"Unable to parse item type from {lineData.First()} for item number {resultData.Count + 1}");
                         continue;
                     case 2:
-                        currentResult.AddPropertyValueData(lineData[0], lineData[1]);
+                        currentResult.AddPropertyValueData(lineData.First(), lineData.Last());
                         continue;
+                    default:
+                        currentResult.AddError(
+                            $"Unable to parse property value from {line}");
+                        continue;
+
                 }
             }
 
