@@ -114,6 +114,55 @@ namespace Services.Tests
         }
 
         [Fact]
+        public void ReadBooks_FixedInputWithWeirdCapitals_ReturnsMatchingBook()
+        {
+            var inputData = new ParsedInputData()
+            {
+                InputType = LibraryItemType.Book
+            };
+            var fake = new Faker();
+            var Title = fake.Company.CatchPhrase();
+            inputData.AddPropertyValueData("TITLE", Title);
+            var publisher = fake.Company.CompanyName();
+            inputData.AddPropertyValueData("pubLishEr", publisher);
+            var ISBN = fake.Hacker.Adjective();
+            inputData.AddPropertyValueData("iSbN", ISBN);
+            var pageCount = Random.Shared.Next();
+            inputData.AddPropertyValueData("numberofpages", pageCount.ToString());
+            var yearPublished = Random.Shared.Next();
+            inputData.AddPropertyValueData("published", yearPublished.ToString());
+            var room = Random.Shared.Next();
+            inputData.AddPropertyValueData("roomId", room.ToString());
+            var row = Random.Shared.Next();
+            inputData.AddPropertyValueData("ROWid", row.ToString());
+            var shelf = Random.Shared.Next();
+            inputData.AddPropertyValueData("ShElFiD", shelf.ToString());
+            var author1 = fake.Person.FullName;
+            inputData.AddPropertyValueData("auTHOR", author1);
+            var author2 = new Faker().Person.FullName;
+            inputData.AddPropertyValueData("auTHOR", author2);
+
+            _importDataParserMock.Setup(i => i.ParseInput(It.IsAny<string>()))
+                .Returns(new List<ParsedInputData>(){inputData});
+
+            var result = buildService().ReadBooks("this text doesn't matter in this test.");
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(1);
+
+            result.First().Title.Should().Be(Title);
+            result.First().Publisher.Should().Be(publisher);
+            result.First().ISBN.Should().Be(ISBN);
+            result.First().PageCount.Should().Be(pageCount);
+            result.First().YearPublished.Should().Be(yearPublished);
+            result.First().RoomId.Should().Be(room);
+            result.First().RowId.Should().Be(row);
+            result.First().ShelfId.Should().Be(shelf);
+            result.First().Authors.First().Should().Be(author1);
+            result.First().Authors.Last().Should().Be(author2);
+        }
+
+        [Fact]
         public void ReadBooks_NullInput_ThrowsArgumentNullException()
         {
             buildService().Invoking(s => s.ReadBooks(null)).Should().Throw<ArgumentNullException>();
