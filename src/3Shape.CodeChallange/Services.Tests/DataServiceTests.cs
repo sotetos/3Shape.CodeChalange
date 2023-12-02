@@ -6,6 +6,7 @@ using Moq;
 using Services.Internals;
 using Services.Internals.Models;
 using Services.Ports;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Services.Tests
 {
@@ -224,6 +225,55 @@ namespace Services.Tests
 
             result.Should().NotBeNullOrEmpty();
             result.Should().HaveCount(booksToTest);
+        }
+
+        [Theory]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        public void FindBooks_ValidInputThatMatch1Book_Returns1Book(int booksToTest)
+        {
+            var searchText = new Faker().Rant.Review();
+
+            var books = createRandomBooks(booksToTest).ToList();
+
+            books.Last().Title += searchText;
+
+            _searchStringParserMock.Setup(s => s.ParseSearchString(searchText))
+                .Returns(new List<ParsedSearchCondition>()
+                {
+                    new ParsedSearchCondition(searchText)
+                });
+            _pretendBookDataSource.Books = books;
+
+            var result = buildService().FindBooks(searchText);
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(1);
+            result.First().Title.Should().EndWith(searchText);
+        }
+
+        [Fact]
+        public void FindBooks_EmptyInput_ReturnsAllBooks()
+        {
+            var searchText = string.Empty;
+
+            var books = createRandomBooks(50).ToList();
+
+            _searchStringParserMock.Setup(s => s.ParseSearchString(searchText))
+                .Returns(new List<ParsedSearchCondition>(1));
+            _pretendBookDataSource.Books = books;
+
+            var result = buildService().FindBooks(searchText);
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCount(50);
+        }
+
+        [Fact]
+        public void FindBooks_NullInput_ThrowsArgumentNullException()
+        {
+            buildService().Invoking(s => s.FindBooks(null)).Should().Throw<ArgumentNullException>();
         }
 
         #endregion

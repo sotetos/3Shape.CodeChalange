@@ -53,6 +53,11 @@ namespace Services.Internals
 
             var conditions = _searchStringParser.ParseSearchString(search);
 
+            if (!conditions.Any())
+            {
+                return _pretendBookDataSource.Books;
+            }
+
             var sourceBooks = _pretendBookDataSource.Books;
             IEnumerable<Book> resultBooks = new List<Book>();
 
