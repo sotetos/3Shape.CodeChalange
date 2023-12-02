@@ -10,7 +10,32 @@ namespace Services.Internals.ExtensionMethods
 
         internal static bool ParsePropertyValuePair(this Book item, KeyValuePair<string, string> data)
         {
-            return ((TextItemBase)item).ParsePropertyValuePair(data);
+            switch (data.Key.ToLower())
+            {
+                case "roomid":
+                    if (int.TryParse(data.Value, out var room))
+                    {
+                        item.RoomId = room;
+                        return true;
+                    }
+                    return false;
+                case "rowid":
+                    if (int.TryParse(data.Value, out var row))
+                    {
+                        item.RowId = row;
+                        return true;
+                    }
+                    return false;
+                case "shelfid":
+                    if (int.TryParse(data.Value, out var shelf))
+                    {
+                        item.ShelfId = shelf;
+                        return true;
+                    }
+                    return false;
+                default:
+                    return ((TextItemBase)item).ParsePropertyValuePair(data);
+            }
         }
 
         internal static bool ParsePropertyValuePair(this EBook item, KeyValuePair<string, string> data)

@@ -56,6 +56,10 @@ namespace Services.Tests
                     testData.AddPropertyValueData("Publisher", fake.Company.CompanyName());
                     testData.AddPropertyValueData("Published", Random.Shared.Next(1200, 2100).ToString());
                     testData.AddPropertyValueData("NumberOfPages", Random.Shared.Next(100, int.MaxValue).ToString());
+                    testData.AddPropertyValueData("roomId", Random.Shared.Next().ToString());
+                    testData.AddPropertyValueData("rowId", Random.Shared.Next().ToString());
+                    testData.AddPropertyValueData("shelfId", Random.Shared.Next().ToString());
+
                 }
 
                 yield return testData;
@@ -75,7 +79,10 @@ namespace Services.Tests
                     ISBN = fake.Hacker.Phrase(),
                     LibraryItemType = LibraryItemType.Book,
                     PageCount = Random.Shared.Next(100, 500),
-                    YearPublished = Random.Shared.Next(100, 2100)
+                    YearPublished = Random.Shared.Next(100, 2100),
+                    RoomId = Random.Shared.Next(),
+                    RowId = Random.Shared.Next(),
+                    ShelfId = Random.Shared.Next(),
                 };
                 for (var j = 0; j < Random.Shared.Next(1,5); j++)
                 {

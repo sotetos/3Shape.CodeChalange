@@ -8,6 +8,17 @@ namespace Services.Internals.ExtensionMethods
     {
         internal static bool Search(this Book item, ParsedSearchCondition data)
         {
+            if (data.IntegerValue.HasValue)
+            {
+                if (item.RoomId.ToString().Contains(data.StringValue))
+                    return true;
+                if (item.RowId.ToString().Contains(data.StringValue))
+                    return true;
+                if (item.ShelfId.ToString().Contains(data.StringValue))
+                    return true;
+
+            }
+
             return ((TextItemBase)item).Search(data);
         }
 
