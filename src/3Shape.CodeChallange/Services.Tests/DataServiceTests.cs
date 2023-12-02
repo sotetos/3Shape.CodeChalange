@@ -135,7 +135,7 @@ namespace Services.Tests
 
             for (var i = 0; i < books.Count(); i++)
             {
-                switch (i%5)
+                switch (i%8)
                 {
                     case 0:
                         books[i].Title += searchText;
@@ -152,7 +152,15 @@ namespace Services.Tests
                     case 4:
                         books[i].ISBN += searchText;
                         break;
-
+                    case 5:
+                        books[i].RoomId = int.Parse(searchText);
+                        break;
+                    case 6:
+                        books[i].RowId = int.Parse(searchText);
+                        break;
+                    case 7:
+                        books[i].ShelfId = int.Parse(searchText);
+                        break;
                 }
             }
 
