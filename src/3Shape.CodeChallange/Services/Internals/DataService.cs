@@ -36,6 +36,11 @@ namespace Services.Internals
             //For this example, I will use only non-null values due to only implementing books
             var books = results.Where(r => r != null);
 
+            _pretendBookDataSource.Books.AddRange(books
+                .Where(r => r.LibraryItemType == LibraryItemType.Book)
+                .Select(r => (Book)r)
+            );
+
             return books
                 .Where(r => r.LibraryItemType == LibraryItemType.Book)
                 .Select(r => (Book)r)
