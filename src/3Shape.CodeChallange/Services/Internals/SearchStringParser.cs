@@ -20,7 +20,7 @@ namespace Services.Internals
 
             return conditions
                 .Where(c => !string.IsNullOrWhiteSpace(c))
-                .Select(c => new ParsedSearchCondition(c.Trim()));
+                .Select(c => new ParsedSearchCondition(c.Trim().Trim('*')));
         }
     }
 }
