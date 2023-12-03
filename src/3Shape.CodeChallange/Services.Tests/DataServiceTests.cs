@@ -3,18 +3,17 @@ using FluentAssertions;
 using Models;
 using Models.Text;
 using Moq;
+using Services.DTOs;
 using Services.Internals;
-using Services.Internals.Models;
 using Services.Ports;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Services.Tests
 {
     public class DataServiceTests
     {
-        public readonly Mock<IImportDataParser> _importDataParserMock;
-        public readonly Mock<ISearchStringParser> _searchStringParserMock;
-        public readonly PretendBookDataSource _pretendBookDataSource;
+        private readonly Mock<IImportDataParser> _importDataParserMock;
+        private readonly Mock<ISearchStringParser> _searchStringParserMock;
+        private readonly PretendBookDataSource _pretendBookDataSource;
 
         public DataServiceTests()
         {

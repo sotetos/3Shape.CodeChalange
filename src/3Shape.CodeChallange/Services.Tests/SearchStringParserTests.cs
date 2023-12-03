@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Services.Internals;
-using System.Diagnostics.Metrics;
 
 namespace Services.Tests
 {

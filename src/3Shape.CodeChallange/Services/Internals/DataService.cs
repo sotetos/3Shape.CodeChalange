@@ -1,12 +1,12 @@
 ﻿using Models;
 using Models.Text;
+using Services.DTOs;
 using Services.Internals.ExtensionMethods;
-using Services.Internals.Models;
 using Services.Ports;
 
 namespace Services.Internals
 {
-    public class DataService : IDataImporter, IdataAccessor
+    internal class DataService : IDataImporter, IdataAccessor
     {
         private readonly IImportDataParser _importDataParser;
         private readonly ISearchStringParser _searchStringParser;

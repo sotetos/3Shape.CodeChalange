@@ -1,4 +1,4 @@
-﻿using Services.Internals.Models;
+﻿using Services.DTOs;
 
 namespace Services.Ports;
 

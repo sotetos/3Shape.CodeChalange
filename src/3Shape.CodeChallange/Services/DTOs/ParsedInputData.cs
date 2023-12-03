@@ -1,6 +1,6 @@
 ﻿using Models;
 
-namespace Services.Internals.Models
+namespace Services.DTOs
 {
     public record ParsedInputData
     {

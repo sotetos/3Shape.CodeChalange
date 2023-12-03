@@ -1,6 +1,6 @@
 ﻿using Models;
 using Models.Text;
-using Services.Internals.Models;
+using Services.DTOs;
 
 namespace Services.Internals.ExtensionMethods
 {
