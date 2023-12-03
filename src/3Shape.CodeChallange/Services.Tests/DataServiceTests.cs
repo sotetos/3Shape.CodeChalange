@@ -253,6 +253,34 @@ namespace Services.Tests
             result.First().Title.Should().EndWith(searchText);
         }
 
+        [Theory]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        public void FindBooks_ValidInputThatMatchesSomeBooks_Returns1Book(int booksToTest)
+        {
+
+            var books = createRandomBooks(booksToTest).ToList();
+
+            var searchText = books[4].Authors.First();
+
+            _searchStringParserMock.Setup(s => s.ParseSearchString(searchText))
+                .Returns(new List<ParsedSearchCondition>()
+                {
+                    new ParsedSearchCondition(searchText)
+                });
+            _pretendBookDataSource.Books = books;
+
+            var result = buildService().FindBooks(searchText);
+
+            result.Should().NotBeNullOrEmpty();
+            result.Should().HaveCountGreaterOrEqualTo(1);
+            foreach (var book in result)
+            {
+                book.Authors.Any(a => a.Equals(searchText)).Should().BeTrue();
+            }
+        }
+
         [Fact]
         public void FindBooks_EmptyInput_ReturnsAllBooks()
         {
